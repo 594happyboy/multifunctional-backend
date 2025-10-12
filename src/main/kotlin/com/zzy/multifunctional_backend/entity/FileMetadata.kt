@@ -10,7 +10,7 @@ import java.time.LocalDateTime
  * @author ZZY
  * @date 2025-10-09
  */
-@TablgeName("file_metadata")
+@TableName("file_metadata")
 data class FileMetadata(
     @TableId(type = IdType.AUTO)
     var id: Long? = null,
