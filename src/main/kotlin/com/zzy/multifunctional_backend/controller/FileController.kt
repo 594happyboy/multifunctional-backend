@@ -83,16 +83,18 @@ class FileController(
         
         val (inputStream, fileMetadata) = fileService.downloadFile(id)
         
-        // 设置响应头
+        // 设置Content-Type
         response.contentType = fileMetadata.fileType ?: "application/octet-stream"
         response.characterEncoding = "UTF-8"
         
-        // 设置文件名，支持中文
-        val encodedFileName = URLEncoder.encode(fileMetadata.fileName, StandardCharsets.UTF_8)
+        // 设置文件名（RFC 5987标准）
+        val fileName = fileMetadata.fileName ?: "download"
+        val encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8)
             .replace("+", "%20")
+        
         response.setHeader(
             "Content-Disposition",
-            "attachment; filename=\"$encodedFileName\"; filename*=UTF-8''$encodedFileName"
+            "attachment; filename*=UTF-8''$encodedFileName"
         )
         
         // 写入文件流
@@ -135,18 +137,16 @@ class FileController(
         return ApiResponse.success(result, "批量删除完成")
     }
     
-    @Operation(summary = "健康检查", description = "检查服务是否正常运行")
-    @GetMapping("/health")
-    fun health(): ApiResponse<Map<String, String>> {
-        return ApiResponse.success(
-            mapOf(
-                "status" to "UP",
-                "service" to "File Management Service",
-                "timestamp" to System.currentTimeMillis().toString()
-            ),
-            "服务正常"
-        )
+    @Operation(summary = "清除所有缓存", description = "清除Redis中的所有文件相关缓存（管理功能）")
+    @PostMapping("/cache/clear")
+    fun clearCache(): ApiResponse<String> {
+        logger.info("清除所有文件缓存")
+        
+        fileService.clearAllCache()
+        
+        return ApiResponse.success("缓存已清除", "缓存清除成功")
     }
+    
 }
 
 

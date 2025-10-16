@@ -4,7 +4,6 @@ import cn.hutool.core.io.FileUtil as HutoolFileUtil
 import cn.hutool.core.util.IdUtil
 import cn.hutool.crypto.digest.DigestUtil
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
 import java.io.IOException
 
 /**
@@ -49,6 +48,9 @@ object FileUtil {
      * 验证文件类型
      */
     fun validateFileType(filename: String, allowedTypes: List<String>): Boolean {
+        if(allowedTypes.contains("*")) {
+            return true
+        }
         val extension = getFileExtension(filename).lowercase()
         return allowedTypes.contains(extension)
     }
@@ -58,32 +60,6 @@ object FileUtil {
      */
     fun validateFileSize(fileSize: Long, maxSize: Long): Boolean {
         return fileSize <= maxSize
-    }
-    
-    /**
-     * 创建目录
-     */
-    fun createDirectory(path: String) {
-        val dir = File(path)
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-    }
-    
-    /**
-     * 删除文件
-     */
-    fun deleteFile(filePath: String): Boolean {
-        return try {
-            val file = File(filePath)
-            if (file.exists()) {
-                file.delete()
-            } else {
-                false
-            }
-        } catch (e: Exception) {
-            false
-        }
     }
     
     /**

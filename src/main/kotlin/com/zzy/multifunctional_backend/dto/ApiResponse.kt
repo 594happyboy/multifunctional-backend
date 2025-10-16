@@ -41,20 +41,6 @@ data class ApiResponse<T>(
         }
         
         /**
-         * 未授权
-         */
-        fun <T> unauthorized(message: String = "未授权"): ApiResponse<T> {
-            return ApiResponse(401, message, null)
-        }
-        
-        /**
-         * 禁止访问
-         */
-        fun <T> forbidden(message: String = "禁止访问"): ApiResponse<T> {
-            return ApiResponse(403, message, null)
-        }
-        
-        /**
          * 未找到
          */
         fun <T> notFound(message: String = "资源不存在"): ApiResponse<T> {

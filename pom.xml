@@ -115,19 +115,6 @@
 			<version>${hutool.version}</version>
 		</dependency>
 
-		<!-- Lombok (可选，简化代码) -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- Validation -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-
 		<!-- DevTools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

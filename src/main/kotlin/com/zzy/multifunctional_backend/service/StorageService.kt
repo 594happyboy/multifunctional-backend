@@ -101,41 +101,6 @@ class StorageService(
             false
         }
     }
-    
-    /**
-     * 检查文件是否存在
-     */
-    fun fileExists(storedName: String): Boolean {
-        return try {
-            minioClient.statObject(
-                StatObjectArgs.builder()
-                    .bucket(bucketName)
-                    .`object`(storedName)
-                    .build()
-            )
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-    
-    /**
-     * 获取文件URL
-     */
-    fun getFileUrl(storedName: String, expirySeconds: Int = 3600): String {
-        return try {
-            minioClient.getPresignedObjectUrl(
-                GetPresignedObjectUrlArgs.builder()
-                    .bucket(bucketName)
-                    .`object`(storedName)
-                    .expiry(expirySeconds)
-                    .build()
-            )
-        } catch (e: Exception) {
-            logger.error("获取文件URL失败: {}", storedName, e)
-            throw RuntimeException("获取文件URL失败", e)
-        }
-    }
 }
 
 

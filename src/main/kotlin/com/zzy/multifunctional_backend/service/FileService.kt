@@ -45,6 +45,24 @@ class FileService(
         private const val CACHE_KEY_FILE_LIST = "file:list:"
         private const val CACHE_KEY_FILE_INFO = "file:info:"
         private const val CACHE_EXPIRE_TIME = 300L // 5分钟
+        
+        /**
+         * 排序字段白名单映射表（驼峰 -> 数据库字段名）
+         * 优点：
+         * 1. 安全：白名单机制，防止SQL注入
+         * 2. 可维护：字段名集中管理
+         * 3. 清晰：明确哪些字段可以排序
+         */
+        private val SORTABLE_FIELDS = mapOf(
+            "uploadTime" to "upload_time",
+            "updateTime" to "update_time",
+            "fileName" to "file_name",
+            "fileSize" to "file_size",
+            "downloadCount" to "download_count",
+            "id" to "id"
+        )
+        
+        private const val DEFAULT_SORT_FIELD = "upload_time"
     }
     
     /**
@@ -120,10 +138,16 @@ class FileService(
     ): FileListResponse {
         // 尝试从缓存获取
         val cacheKey = "$CACHE_KEY_FILE_LIST$page:$size:$keyword:$sortBy:$order"
-        val cached = redisUtil.get(cacheKey)
+        val cached = redisUtil.get(cacheKey, FileListResponse::class.java)
         if (cached != null) {
             logger.debug("从缓存获取文件列表")
-            return cached as FileListResponse
+            return cached
+        }
+        
+        // 白名单验证：从映射表获取数据库字段名
+        val dbSortBy = SORTABLE_FIELDS[sortBy] ?: run {
+            logger.warn("检测到无效的排序字段: {}, 使用默认排序字段: {}", sortBy, DEFAULT_SORT_FIELD)
+            DEFAULT_SORT_FIELD
         }
         
         // 构建查询条件
@@ -134,7 +158,7 @@ class FileService(
                     like("file_name", keyword)
                 }
             }
-            .orderBy(true, order.equals("asc", ignoreCase = true), sortBy)
+            .orderBy(true, order.equals("asc", ignoreCase = true), dbSortBy)
         
         // 分页查询
         val pageObj = Page<FileMetadata>(page.toLong(), size.toLong())
@@ -161,10 +185,10 @@ class FileService(
     fun getFileInfo(id: Long): FileResponse {
         // 尝试从缓存获取
         val cacheKey = "$CACHE_KEY_FILE_INFO$id"
-        val cached = redisUtil.get(cacheKey)
+        val cached = redisUtil.get(cacheKey, FileResponse::class.java)
         if (cached != null) {
             logger.debug("从缓存获取文件信息: {}", id)
-            return cached as FileResponse
+            return cached
         }
         
         val fileMetadata = fileMapper.selectById(id)
@@ -269,6 +293,16 @@ class FileService(
      */
     private fun clearFileListCache() {
         redisUtil.deleteByPattern("$CACHE_KEY_FILE_LIST*")
+    }
+    
+    /**
+     * 清除所有文件相关缓存（管理功能）
+     */
+    fun clearAllCache() {
+        logger.info("开始清除所有文件相关缓存")
+        redisUtil.deleteByPattern("$CACHE_KEY_FILE_LIST*")
+        redisUtil.deleteByPattern("$CACHE_KEY_FILE_INFO*")
+        logger.info("所有文件相关缓存已清除")
     }
 }
 

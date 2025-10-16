@@ -1,5 +1,6 @@
 package com.zzy.multifunctional_backend.util
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -11,7 +12,8 @@ import java.util.concurrent.TimeUnit
  */
 @Component
 class RedisUtil(
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val redisTemplate: RedisTemplate<String, Any>,
+    private val objectMapper: ObjectMapper
 ) {
     
     /**
@@ -33,38 +35,22 @@ class RedisUtil(
     }
     
     /**
+     * 获取并转换为指定类型
+     */
+    fun <T> get(key: String, clazz: Class<T>): T? {
+        val value = redisTemplate.opsForValue().get(key) ?: return null
+        return if (clazz.isInstance(value)) {
+            clazz.cast(value)
+        } else {
+            objectMapper.convertValue(value, clazz)
+        }
+    }
+    
+    /**
      * 删除缓存
      */
     fun delete(key: String): Boolean {
         return redisTemplate.delete(key)
-    }
-    
-    /**
-     * 批量删除缓存
-     */
-    fun delete(keys: Collection<String>): Long {
-        return redisTemplate.delete(keys) ?: 0
-    }
-    
-    /**
-     * 判断key是否存在
-     */
-    fun hasKey(key: String): Boolean {
-        return redisTemplate.hasKey(key)
-    }
-    
-    /**
-     * 设置过期时间
-     */
-    fun expire(key: String, timeout: Long, unit: TimeUnit = TimeUnit.SECONDS): Boolean {
-        return redisTemplate.expire(key, timeout, unit)
-    }
-    
-    /**
-     * 获取过期时间
-     */
-    fun getExpire(key: String): Long {
-        return redisTemplate.getExpire(key) ?: -1
     }
     
     /**
