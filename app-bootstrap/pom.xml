@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>com.zzy</groupId>
-            <artifactId>module-blog</artifactId>
+            <artifactId>module-home</artifactId>
         </dependency>
 
         <!-- MySQL 驱动 -->

@@ -11,9 +11,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>module-blog</artifactId>
-    <name>module-blog</name>
-    <description>博客功能模块</description>
+    <artifactId>module-home</artifactId>
+    <name>module-home</name>
+    <description>首页功能模块</description>
 
     <dependencies>
         <!-- 依赖通用模块 -->

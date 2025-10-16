@@ -24,7 +24,7 @@
     <modules>
         <module>common</module>
         <module>module-file</module>
-        <module>module-blog</module>
+        <module>module-home</module>
         <module>app-bootstrap</module>
     </modules>
 
@@ -53,7 +53,7 @@
             </dependency>
             <dependency>
                 <groupId>com.zzy</groupId>
-                <artifactId>module-blog</artifactId>
+                <artifactId>module-home</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
