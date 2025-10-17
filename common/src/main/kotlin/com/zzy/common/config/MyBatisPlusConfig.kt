@@ -9,11 +9,12 @@ import org.springframework.context.annotation.Configuration
 
 /**
  * MyBatis-Plus配置
+ * 统一数据库配置，扫描所有模块的 Mapper
  * @author ZZY
  * @date 2025-10-09
  */
 @Configuration
-@MapperScan("com.zzy.file.mapper", "com.zzy.blog.mapper")
+@MapperScan("com.zzy.file.mapper", "com.zzy.home.mapper")
 class MyBatisPlusConfig {
     
     /**
