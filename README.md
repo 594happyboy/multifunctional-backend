@@ -179,8 +179,8 @@ multifunctional-backend/
 │       ├── service/                  # 文件业务逻辑
 │       ├── entity/                   # 文件实体
 │       └── mapper/                   # 数据访问层
-├── module-home/                      # 博客模块
-│   └── src/main/kotlin/com/zzy/home/
+├── module-blog/                      # 博客模块
+│   └── src/main/kotlin/com/zzy/blog/
 │       ├── controller/               # 博客API
 │       ├── service/                  # 博客业务逻辑
 │       ├── entity/                   # 博客实体

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration
  * @date 2025-10-09
  */
 @Configuration
-@MapperScan("com.zzy.file.mapper", "com.zzy.home.mapper")
+@MapperScan(value = ["com.zzy.file.mapper", "com.zzy.blog.mapper"])
 class MyBatisPlusConfig {
     
     /**
